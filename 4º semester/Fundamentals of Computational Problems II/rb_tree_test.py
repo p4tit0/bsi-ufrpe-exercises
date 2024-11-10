@@ -1,5 +1,5 @@
-from binary_search_tree import Tree
-from binary_node import Node
+from RedBlackTree.rb_tree import Tree
+from RedBlackTree.rb_node import Node
 import random
 
 def generate_random_list(size: int) -> list[int]:
@@ -12,17 +12,12 @@ def generate_random_list(size: int) -> list[int]:
     return [random.randint(0, size) for _ in range(size)]
 
 def main():
-    size = 100
+    size = 10
     random_numbers = generate_random_list(size)
     print(f"Generated list of {size} random numbers between 0 and 10: {', '.join(str(x) for x in random_numbers)}")
     
     tree = Tree()
     for number in random_numbers:
-        if not tree.is_empty():
-            node = Tree.search(tree.get_root(), number)
-            if node is not None:
-                print("Repeated Number Found!")
-                break
         tree.insert(Node(number))
     
         

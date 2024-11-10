@@ -1,9 +1,10 @@
-from binary_node import Node
+from .binary_node import Node
 from collections.abc import Callable
 from typing import Optional
 
 class Tree:
     __root: Node
+    __nil: Node
     
     def __init__(self):
         self.__root = None
@@ -67,19 +68,18 @@ class Tree:
                 func(node)
             return result
     
-    @staticmethod
-    def search(node: Node, data: int) -> Optional[Node]:
-        if node is None or data == node.get_data():
+    def search(self, node: Node, data: int) -> Optional[Node]:
+        if node == self.__nil or data == node.get_data():
             return node
         
         if data < node.get_data():
-            return Tree.search(node.get_left(), data)
-        return Tree.search( node.get_right(), data)
+            return self.search(node.get_left(), data)
+        return self.search( node.get_right(), data)
     
-    @staticmethod
-    def iterative_search(node: Node, data: int) -> Node:
+
+    def iterative_search(self, node: Node, data: int) -> Node:
         x = node
-        while x is not None and data != x.get_data():
+        while x != self.__nil and data != x.get_data():
             if data < x.get_data():
                 x = x.get_left()
             else:
@@ -106,7 +106,7 @@ class Tree:
             return Tree.tree_minimum(node.get_right())
         x = node
         y = x.get_parent()
-        while y is not None and x == y.get_right():
+        while y is not None and x.is_right():
             x = y
             y = y.get_parent()
         return y
@@ -122,23 +122,27 @@ class Tree:
             y = y.get_parent()
         return y
     
-    def insert(self, data: int):
-        z = Node(data)
-        y = None
+    def insert(self, node: Node) -> Node:
+        z = node
+        y = self.__nil
         x = self.__root
-        while x is not None:
+        while x is not None and x != self.__nil:
             y = x
             if z.get_data() < x.get_data():
                 x = x.get_left()
             else:
                 x = x.get_right()
         z.set_parent(y)
-        if y is None:
-            self.__root = z
+        if y == self.__nil:
+            self.set_root(z)
         elif z.get_data() < y.get_data():
             y.set_left(z) 
         else:
             y.set_right(z)
+        
+        node.set_left(self.__nil)
+        node.set_right(self.__nil)
+        return z
     
     def delete(self, node: Node):
         y: Node
